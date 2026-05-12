@@ -3,7 +3,7 @@ use beam_rs::*;
 fn main() {
     println!("============================================================");
     println!("  beam_rs: Apache Beam Execution Engine in Rust");
-    println!("  A proof-of-concept for FlareDB's core pipeline engine");
+    println!("  A proof-of-concept for a Rust-based Beam pipeline engine");
     println!("============================================================\n");
 
     let events: Vec<(String, f64)> = vec![

@@ -2,7 +2,7 @@
 
 A mini Apache Beam execution engine in **pure Rust** — zero external dependencies.
 
-Built as a proof-of-concept to explore how a streaming database like [FlareDB](https://flaredb.com) would implement the [Apache Beam programming model](https://beam.apache.org/documentation/programming-guide/) internally.
+Built as a proof-of-concept to explore how a streaming database engine would implement the [Apache Beam programming model](https://beam.apache.org/documentation/programming-guide/) internally.
 
 ## What This Implements
 

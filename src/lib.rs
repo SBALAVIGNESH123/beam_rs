@@ -8,7 +8,7 @@
 //   - Watermarks:   Event-time tracking for window completion
 //   - DirectRunner: Local single-machine executor
 //
-// This is exactly what FlareDB's Rust engine must implement
+// This is exactly what a Rust-based Beam runner must implement
 // to execute Apache Beam pipelines via the Portability Framework.
 
 use std::collections::HashMap;
@@ -36,7 +36,7 @@ impl<T> TimestampedValue<T> {
 /// It represents an immutable, potentially unbounded collection
 /// of timestamped elements.
 ///
-/// In FlareDB's Rust engine, this would be backed by an
+/// In a streaming engine, this would be backed by an
 /// async channel or ring buffer for true streaming.
 #[derive(Debug, Clone)]
 pub struct PCollection<T: Clone> {
@@ -115,7 +115,7 @@ impl Transforms {
 
     /// GroupByKey: Groups elements by key.
     /// This is the core shuffle operation in Beam / MapReduce.
-    /// In FlareDB, this would trigger a distributed shuffle
+    /// In a distributed runner, this would trigger a shuffle
     /// across partitions.
     pub fn group_by_key<K, V>(
         input: &PCollection<(K, V)>,
@@ -171,7 +171,7 @@ impl Transforms {
 // ═══════════════════════════════════════════════════════════
 
 /// A Window represents a finite time interval.
-/// FlareDB must assign every element to one or more windows.
+/// A Beam runner must assign every element to one or more windows.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Window {
     pub start: i64, // seconds
@@ -184,7 +184,7 @@ impl fmt::Display for Window {
     }
 }
 
-/// Windowing strategies that FlareDB's engine must support.
+/// Windowing strategies that a Beam runner must support.
 pub enum WindowingStrategy {
     /// Fixed (Tumbling): Non-overlapping windows of constant size.
     /// Example: every 10 seconds
@@ -337,8 +337,8 @@ impl WindowAssigner {
 /// When the watermark passes the end of a window, that window
 /// is considered "complete" and its results can be emitted.
 ///
-/// This is THE critical concept for FlareDB. Without watermarks,
-/// the engine would never know when to emit windowed results.
+/// This is THE critical concept for any streaming engine.
+/// Without watermarks, the engine cannot know when to emit windowed results.
 pub struct Watermark {
     current: f64, // current watermark position (event time)
 }
@@ -371,13 +371,13 @@ impl Watermark {
 // ═══════════════════════════════════════════════════════════
 
 /// The DirectRunner executes Beam pipelines locally.
-/// FlareDB replaces this with a distributed Rust engine
+/// A production runner replaces this with a distributed engine
 /// that executes the same pipeline across multiple nodes.
 pub struct DirectRunner;
 
 impl DirectRunner {
     /// Execute a windowed aggregation pipeline.
-    /// This is the core execution loop FlareDB must implement.
+    /// This is the core execution loop a streaming runner must implement.
     pub fn run_windowed_aggregation(
         input: &PCollection<(String, i64)>,
         strategy: &WindowingStrategy,
